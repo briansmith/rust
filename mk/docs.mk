@@ -22,14 +22,10 @@
 # L10N_LANGS are the languages for which the docs have been
 # translated.
 ######################################################################
-DOCS := index intro tutorial \
-    complement-lang-faq complement-design-faq complement-project-faq \
-    rustdoc reference grammar
+DOCS :=
 
 # Legacy guides, preserved for a while to reduce the number of 404s
-DOCS += guide-crates guide-error-handling guide-ffi guide-macros guide \
-    guide-ownership guide-plugins guide-pointers guide-strings guide-tasks \
-    guide-testing
+DOCS +=
 
 
 RUSTDOC_DEPS_reference := doc/full-toc.inc
@@ -65,7 +61,7 @@ ERR_IDX_GEN = $(RPATH_VAR2_T_$(CFG_BUILD)_H_$(CFG_BUILD)) $(ERR_IDX_GEN_EXE)
 
 D := $(S)src/doc
 
-DOC_TARGETS := trpl nomicon style error-index
+DOC_TARGETS :=
 COMPILER_DOC_TARGETS :=
 DOC_L10N_TARGETS :=
 
@@ -118,7 +114,7 @@ doc/footer.inc: $(D)/footer.inc | doc/
 	$(Q)cp -PRp $< $@ 2> /dev/null
 
 # The (english) documentation for each doc item.
-DOC_TARGETS += doc/not_found.html
+DOC_TARGETS +=
 doc/not_found.html: $(D)/not_found.md $(HTML_DEPS) | doc/
 	@$(call E, rustdoc: $@)
 	$(Q)$(RUSTDOC) $(RUSTDOC_HTML_OPTS_NO_CSS) \
@@ -128,7 +124,7 @@ doc/not_found.html: $(D)/not_found.md $(HTML_DEPS) | doc/
 define DEF_DOC
 
 # HTML (rustdoc)
-DOC_TARGETS += doc/$(1).html
+DOC_TARGETS +=
 doc/$(1).html: $$(D)/$(1).md $$(HTML_DEPS) $$(RUSTDOC_DEPS_$(1)) | doc/
 	@$$(call E, rustdoc: $$@)
 	$$(Q)$$(RUSTDOC) $$(RUSTDOC_HTML_OPTS) $$(RUSTDOC_FLAGS_$(1)) $$<
@@ -179,9 +175,9 @@ $(foreach crate,$(CRATES),$(eval $(call DEF_LIB_DOC,$(crate))))
 
 COMPILER_DOC_TARGETS := $(CRATES:%=doc/%/index.html)
 ifdef CFG_ENABLE_COMPILER_DOCS
-  DOC_TARGETS += $(COMPILER_DOC_TARGETS)
+  DOC_TARGETS +=
 else
-  DOC_TARGETS += $(DOC_CRATES:%=doc/%/index.html)
+  DOC_TARGETS +=
 endif
 
 ifdef CFG_DISABLE_DOCS
@@ -193,21 +189,15 @@ endif
 docs: $(DOC_TARGETS)
 compiler-docs: $(COMPILER_DOC_TARGETS)
 
-trpl: doc/book/index.html
-
 doc/book/index.html: $(RUSTBOOK_EXE) $(wildcard $(S)/src/doc/trpl/*.md) | doc/
 	@$(call E, rustbook: $@)
 	$(Q)rm -rf doc/book
 	$(Q)$(RUSTBOOK) build $(S)src/doc/trpl doc/book
 
-nomicon: doc/nomicon/index.html
-
 doc/nomicon/index.html: $(RUSTBOOK_EXE) $(wildcard $(S)/src/doc/nomicon/*.md) | doc/
 	@$(call E, rustbook: $@)
 	$(Q)rm -rf doc/nomicon
 	$(Q)$(RUSTBOOK) build $(S)src/doc/nomicon doc/nomicon
-
-style: doc/style/index.html
 
 doc/style/index.html: $(RUSTBOOK_EXE) $(wildcard $(S)/src/doc/style/*.md) | doc/
 	@$(call E, rustbook: $@)
